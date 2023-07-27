@@ -8,7 +8,9 @@
           "default_popup": "index.html"
       },
       "description": "My Todo list made with 'crxjs': https://github.com/crxjs/chrome-extension-tools",
-      "options_page": "index.html"   
-     
+      "options_page": "index.html"   ,
+      "permissions": [
+        "storage"
+      ]
    
   } 

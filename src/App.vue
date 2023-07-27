@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref, watch } from "vue";
+import { reactive, ref, watch ,toRaw} from "vue";
 import draggable from "vuedraggable";
 import uniqid from "uniqid";
 
@@ -34,15 +34,36 @@ const defaultData = {
     },
   ],
 };
-const localStorageString = localStorage.getItem("todo-data");
-const localStorageData = localStorageString
-  ? JSON.parse(localStorageString)
-  : defaultData;
 
-const data = reactive(localStorageData);
+const data = reactive(defaultData);
+
+if (chrome.storage) {
+  console.log("chek this-------",chrome.storage);
+
+  chrome.storage.sync.get(["todo-data"]).then((result) => {
+    const storedData= result["todo-data"]
+    if (storedData){
+      data.columns=storedData.columns
+    }
+    console.log("Value currentl y is " + result["todo-data"]);
+  });
+} else {
+  console.log("hello");
+  const localStorageString = localStorage.getItem("todo-data");
+  if (localStorageString) {
+    data.columns = JSON.parse(localStorageString).columns;
+  }
+}
 
 watch(data, (newData) => {
-  localStorage.setItem("todo-data", JSON.stringify(newData));
+  if (chrome?.storage) {
+    console.log("check store", chrome.storage)
+    chrome.storage.sync.set({ "todo-data": toRaw(data )}).then(() => {
+      console.log("Value is set", data);
+    });
+  } else {
+    localStorage.setItem("todo-data", JSON.stringify(newData));
+  }
 });
 
 function addItem(event, column) {
@@ -85,7 +106,6 @@ function editTodo(event, column, index) {
     if (arg.name == column.name) {
       arg.List[index].decsription = description;
       arg.List[index].editing = false;
-
     }
   });
 }
@@ -138,7 +158,7 @@ function editTodo(event, column, index) {
                 </div>
                 <div>
                   <span>
-                    <button @click="element.editing = true">E</button>
+                    <button @click="element.editing = true">  E</button>
                   </span>
                   <span>
                     <button @click="deleteTodo(column, index)">D</button>
@@ -167,35 +187,7 @@ function editTodo(event, column, index) {
 
     <!-- ************************************************* -->
     <div class="wrapper">
-      <form @submit.prevent="addItem" autocomplete="off">
-        <h1>Simple to-do list</h1>
-        <!-- <label> Your tasks: {{ isComplete }} / {{ totalItems }}</label> -->
-        <!-- <div class="task">
-          <input
-            type="text"
-            class="task-input"
-            v-model="newItem"
-            placeholder="Get groceries"
-          />
-          <button class="button btn-add">Add</button>
-        </div> -->
-
-        <!-- Show added items in list view-->
-        <!-- <ul class="task-list">
-          <li
-            class="task-list-item"
-            v-for="(item, index) in items"
-            :key="index"
-            v-bind:class="{ completed: item.completed }"
-          >
-            <input type="checkbox" v-model="item.completed" />
-            <span>{{ item.text }}</span>
-            <button v-on:click="deleteItem(index)" class="button btn-delete">
-              Remove
-            </button>
-          </li>
-        </ul> -->
-      </form>
+      <h1>Simple to-do list</h1>
     </div>
   </div>
 </template>

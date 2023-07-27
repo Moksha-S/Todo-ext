@@ -1,0 +1,14 @@
+
+ {
+      "manifest_version": 3,
+      "name": "My-Todo",
+      "version": "1.0.0",
+      "action": {
+          "default_title": "Vue Vite",
+          "default_popup": "index.html"
+      },
+      "description": "My Todo list made with 'crxjs': https://github.com/crxjs/chrome-extension-tools",
+      "options_page": "index.html"   
+     
+   
+  } 

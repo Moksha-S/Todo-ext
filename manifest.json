@@ -1,16 +1,38 @@
 
- {
+{
       "manifest_version": 3,
       "name": "My-Todo",
       "version": "1.0.0",
       "action": {
           "default_title": "Vue Vite",
-          "default_popup": "index.html"
+          "default_popup": "index.html",
+        "default_icon": {
+          "16": "src/assets/todo-16.png",
+          "24": "src/assets/todo-16.png",
+          "32": "src/assets/todo-16.png"
+        }
       },
       "description": "My Todo list made with 'crxjs': https://github.com/crxjs/chrome-extension-tools",
-      "options_page": "index.html"   ,
+      "options_page": "index.html",
+      "background": {
+        "service_worker": "src/background.js",
+        "type": "module"
+      },
       "permissions": [
-        "storage"
-      ]
-   
-  } 
+        "storage",
+        "activeTab",
+        "scripting",
+        "tabs", 
+        "contextMenus"
+      ],
+        "content_scripts": [
+          {
+            "matches": [
+              "<all_urls>"
+            ],
+            "js": [
+              "src/content.js"
+            ]
+          }
+        ]
+}

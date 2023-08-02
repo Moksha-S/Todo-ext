@@ -1,8 +1,9 @@
 <script setup>
-import { reactive, ref, watch, toRaw } from "vue";
+import { reactive, ref, watch, toRaw, onMounted } from "vue";
 import draggable from "vuedraggable";
 import uniqid from "uniqid";
 
+const day = ref("");
 const dragging = ref(false);
 const defaultData = {
   columns: [
@@ -39,7 +40,18 @@ const defaultData = {
     },
   ],
 };
-
+const getDayOfWeek = () => {
+  const weekDays = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  return weekDays[new Date().getDay()];
+};
 const data = reactive(defaultData);
 
 if (chrome.storage) {
@@ -67,6 +79,10 @@ watch(data, (newData) => {
   } else {
     localStorage.setItem("todo-data", JSON.stringify(newData));
   }
+});
+
+onMounted(() => {
+  day.value = getDayOfWeek();
 });
 
 function addItem(event, column) {
@@ -124,8 +140,9 @@ function googleSearch(searchText) {
 
 <template>
   <div>
-    <div class="title-todo">
-      <h1>Your Todo List</h1>
+    <div class="todo-header-container">
+      <h1 class="title-todo">Your Todo List</h1>
+      <div class="todo-sub-title">Have a great {{ day }}! One step at a time, one task at a time!</div>
       <!-- <button @click="removeData()">Clear</button> -->
     </div>
     <div class="main-todo">
@@ -263,9 +280,10 @@ function googleSearch(searchText) {
   display: flex;
   justify-content: space-around;
 }
+.todo-header-container {
+  text-align: center;
+}
 .title-todo {
-  display: flex;
-  justify-content: center;
   text-decoration: underline;
 }
 .todo-container {
@@ -274,6 +292,12 @@ function googleSearch(searchText) {
   padding: 10px;
   background-color: #a2a2a1ff;
   /* background-color: #efc8b1; */
+}
+.todo-sub-title{
+  font-size: 20px;
+    text-transform: capitalize;
+    font-style: italic;
+    padding: 2% 0;
 }
 .todo-text {
   font-size: 18px;

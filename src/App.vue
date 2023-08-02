@@ -1,16 +1,15 @@
 <script setup>
-import ToDo from"./components/Todo.vue"
-
-
+import ToDo from "./components/Todo.vue";
 </script>
 
 <template>
   <div>
-  
-      <ToDo/>
+    <ToDo />
   </div>
 </template>
 
-<style scoped>
-
+<style>
+body {
+  background-color: #e8eae6;
+}
 </style>

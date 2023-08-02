@@ -142,7 +142,9 @@ function googleSearch(searchText) {
   <div>
     <div class="todo-header-container">
       <h1 class="title-todo">Your Todo List</h1>
-      <div class="todo-sub-title">Have a great {{ day }}! One step at a time, one task at a time!</div>
+      <div class="todo-sub-title">
+        Have a great {{ day }}! One step at a time, one task at a time!
+      </div>
       <!-- <button @click="removeData()">Clear</button> -->
     </div>
     <div class="main-todo">
@@ -180,35 +182,39 @@ function googleSearch(searchText) {
               </div>
               <div class="todo-item" v-else>
                 <div class="todo-text">
-                  <input type="checkbox" v-model="element.state" />
-                  <span :class="{ completed: element.state }">
+                  <v-checkbox
+                    v-model="element.state"
+                    :label="` ${element.decsription}`"
+                    :class="{ completed: element.state }"
+                    color="white"
+                  ></v-checkbox>
+
+                  <!-- <input type="checkbox" v-model="element.state" /> -->
+                  <!-- <span :class="{ completed: element.state }">
                     {{ element.decsription }}
-                  </span>
+                  </span> -->
                 </div>
                 <div style="display: flex; justify-content: flex-end">
                   <span>
-                    <i
-                      class="material-icons action-icon"
+                    <v-icon
                       @click="element.editing = true"
-                    >
-                      edit
-                    </i>
+                      class="action-icon"
+                      icon="mdi-pencil"
+                    ></v-icon>
                   </span>
                   <span>
-                    <i
-                      class="material-icons action-icon"
+                    <v-icon
                       @click="deleteTodo(column, index)"
-                    >
-                      delete
-                    </i>
+                      class="action-icon"
+                      icon="mdi-delete"
+                    ></v-icon>
                   </span>
                   <span>
-                    <i
-                      class="material-icons action-icon"
+                    <v-icon
                       @click="googleSearch(element.decsription)"
-                    >
-                      search
-                    </i>
+                      class="action-icon"
+                      icon="mdi-google"
+                    ></v-icon>
                   </span>
                 </div>
               </div>
@@ -270,11 +276,11 @@ function googleSearch(searchText) {
   text-decoration: line-through;
 }
 .action-icon {
-  font-size: 18px;
-  border: 1px solid white;
+  /* font-size: 18px; */
+  /* border: 1px solid white; */
   padding: 1%;
   margin-left: 4px;
-  border-radius: 15px;
+  /* border-radius: 15px; */
 }
 .main-todo {
   display: flex;
@@ -293,11 +299,11 @@ function googleSearch(searchText) {
   background-color: #a2a2a1ff;
   /* background-color: #efc8b1; */
 }
-.todo-sub-title{
+.todo-sub-title {
   font-size: 20px;
-    text-transform: capitalize;
-    font-style: italic;
-    padding: 2% 0;
+  text-transform: capitalize;
+  font-style: italic;
+  padding: 2% 0;
 }
 .todo-text {
   font-size: 18px;

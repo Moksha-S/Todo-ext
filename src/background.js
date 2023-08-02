@@ -1,6 +1,6 @@
-console.log("hello world background todo something in extension background~");
 //listens for the event and fires a event to execute content.js
 import uniqid from "uniqid";
+console.log("====BACKGROUND======= Hello from todo-ext extension");
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
@@ -13,16 +13,8 @@ chrome.runtime.onInstalled.addListener(() => {
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   let todoList;
   if (info.menuItemId === "myContextTodo") {
-    console.log("+++++++++++++", info.selectionText);
     chrome.storage.sync.get(["todo-data"]).then((result) => {
       todoList = result["todo-data"].columns;
-      console.log("check column",result["todo-data"])
-      // console.log(
-      //   "+++++++++++++ GETTING VALUE IN BACKGROUND JS",
-      //   result["todo-data"].columns,
-      //   typeof result["todo-data"].columns
-      // );
-      console.log(todoList.length, "hghbkg check lengthS");
       if (todoList.length != 0) {
         todoList.map((arg) => {
           if (arg.name == "Today") {
@@ -33,7 +25,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
             });
           }
         });
-        setTodo(todoList)
+        setTodo(todoList);
         console.log("*************after new dAta", todoList);
       }
     });
@@ -42,25 +34,27 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     //   url: `https://www.google.com/search?q=${info.selectionText}`,
     // });
   }
-})
+});
 
-function setTodo(arg){
-  chrome.storage.sync.set({ "todo-data": {"columns":arg} }).then(() => {
-    console.log("new v alue from BACKGROUND is set", arg);
-  })
+function getTodo() {
+  return chrome.storage.sync.get(["todo-data"]).then((result) => {
+    return result["todo-data"].columns;
+  });
 }
 
-console.log("welcom to extension script from  basic EXTENSION");
-chrome.action.onClicked.addListener(printText);
+function setTodo(arg) {
+  chrome.storage.sync.set({ "todo-data": { columns: arg } }).then(() => {
+    console.log("new v alue from BACKGROUND is set", arg);
+  });
+}
 
+chrome.action.onClicked.addListener(printText);
+chrome.action.onClicked.addListener((tab) => {
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    files: ["content.js"],
+  });
+});
 function printText() {
   console.log("clicked");
 }
-
-// console.log(
-//   "+++++++++++++ GEtting data form local storage in Background",
-//   chrome.storage.local.get(["todo-data"])
-// );
-// chrome.storage.sync.set({ "new-data": info.selectionText }).then(() => {
-//   console.log("+++++++++++++ new value is==== is set", info.selectionText);
-// });

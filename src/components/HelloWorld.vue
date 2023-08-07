@@ -53,21 +53,14 @@ function addItem(event, column) {
   data.columns.map((arg) => {
     if (arg.name == column.name) {
       arg.List.push({
-        // id: Math.random().toString(36),
         id: uniqid(),
         decsription: description,
         state: false,
       });
     }
   });
-  console.log(data.columns);
 
   form.reset();
-  // column.List.push({
-  //   id: "5522",
-  //   description:description,
-  //   state: "new",
-  // });
 }
 
 function deleteTodo(column, listIndex) {
@@ -85,7 +78,6 @@ function editTodo(event, column, index) {
     if (arg.name == column.name) {
       arg.List[index].decsription = description;
       arg.List[index].editing = false;
-
     }
   });
 }
@@ -163,39 +155,6 @@ function editTodo(event, column, index) {
           </form>
         </div>
       </div>
-    </div>
-
-    <!-- ************************************************* -->
-    <div class="wrapper">
-      <form @submit.prevent="addItem" autocomplete="off">
-        <h1>Simple to-do list</h1>
-        <!-- <label> Your tasks: {{ isComplete }} / {{ totalItems }}</label> -->
-        <!-- <div class="task">
-          <input
-            type="text"
-            class="task-input"
-            v-model="newItem"
-            placeholder="Get groceries"
-          />
-          <button class="button btn-add">Add</button>
-        </div> -->
-
-        <!-- Show added items in list view-->
-        <!-- <ul class="task-list">
-          <li
-            class="task-list-item"
-            v-for="(item, index) in items"
-            :key="index"
-            v-bind:class="{ completed: item.completed }"
-          >
-            <input type="checkbox" v-model="item.completed" />
-            <span>{{ item.text }}</span>
-            <button v-on:click="deleteItem(index)" class="button btn-delete">
-              Remove
-            </button>
-          </li>
-        </ul> -->
-      </form>
     </div>
   </div>
 </template>

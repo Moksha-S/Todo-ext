@@ -51,7 +51,6 @@ if (chrome.storage) {
     console.log("Value currentl y is " , result["todo-data"].columns);
   });
 } else {
-  console.log("hello");
   const localStorageString = localStorage.getItem("todo-data");
   if (localStorageString) {
     data.columns = JSON.parse(localStorageString).columns;
@@ -60,9 +59,7 @@ if (chrome.storage) {
 
 watch(data, (newData) => {
   if (chrome.storage) {
-    console.log("check store", chrome.storage);
     chrome.storage.sync.set({ "todo-data": toRaw(JSON.parse(localStorageString)) }).then(() => {
-      console.log("Value is set", data);
     });
   } else {
     localStorage.setItem("todo-data", JSON.stringify(newData));
@@ -84,14 +81,9 @@ function addItem(event, column) {
       });
     }
   });
-  console.log(data.columns);
 
   form.reset();
-  // column.List.push({
-  //   id: "5522",
-  //   description:description,
-  //   state: "new",
-  // });
+  
 }
 
 function deleteTodo(column, listIndex) {

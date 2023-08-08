@@ -132,7 +132,7 @@ function googleSearch(searchText) {
     <div class="todo-header-container">
       <div class="todo-title">
         <div>
-          <img alt="todo" src="../assets/todo-icon.jpg" class="header-img" />
+          <img alt="todo" src="../assets/todo-logo-img.jpg" class="header-img" />
         </div>
         <div>Your Todo List</div>
       </div>

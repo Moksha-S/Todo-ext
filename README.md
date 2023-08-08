@@ -27,7 +27,7 @@ In order to test the package holding the extension in Chrome we need to:
 3. Select `Load Unpacked`.
 4. Select the `/dist` directory.
 
-
+## Todo application preview
 ![Todo List Extension](src/assets/Todo-ext.png)
 
 

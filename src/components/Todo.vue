@@ -350,6 +350,7 @@ function googleSearch(searchText) {
   width: 100%;
   position: fixed;
   top: 0;
+  z-index: 3;
 }
 .todo-text {
   word-wrap: break-word;

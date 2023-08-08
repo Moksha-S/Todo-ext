@@ -48,13 +48,13 @@ function setTodo(arg) {
   });
 }
 
-chrome.action.onClicked.addListener(printText);
-chrome.action.onClicked.addListener((tab) => {
-  chrome.scripting.executeScript({
-    target: { tabId: tab.id },
-    files: ["content.js"],
-  });
-});
-function printText() {
-  console.log("clicked");
-}
+// chrome.action.onClicked.addListener(printText);
+// chrome.action.onClicked.addListener((tab) => {
+//   chrome.scripting.executeScript({
+//     target: { tabId: tab.id },
+//     files: ["content.js"],
+//   });
+// });
+// function printText() {
+//   console.log("clicked");
+// }

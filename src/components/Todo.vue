@@ -2,8 +2,6 @@
 import { reactive, ref, watch, toRaw, onMounted } from "vue";
 import draggable from "vuedraggable";
 import uniqid from "uniqid";
-
-const day = ref("");
 const dragging = ref(false);
 const defaultData = {
   columns: [
@@ -40,6 +38,7 @@ const defaultData = {
     },
   ],
 };
+const day = ref("");
 const getDayOfWeek = () => {
   const weekDays = [
     "Sunday",
@@ -63,7 +62,6 @@ if (chrome.storage) {
     console.log("Value currentl y is ", result["todo-data"]);
   });
 } else {
-  console.log("hello");
   const localStorageString = localStorage.getItem("todo-data");
   if (localStorageString) {
     data.columns = JSON.parse(localStorageString).columns;
@@ -72,10 +70,7 @@ if (chrome.storage) {
 
 watch(data, (newData) => {
   if (chrome.storage) {
-    console.log("check store", chrome.storage);
-    chrome.storage.sync.set({ "todo-data": toRaw(data) }).then(() => {
-      console.log("Value is set", data);
-    });
+    chrome.storage.sync.set({ "todo-data": toRaw(data) }).then(() => {});
   } else {
     localStorage.setItem("todo-data", JSON.stringify(newData));
   }
@@ -93,22 +88,15 @@ function addItem(event, column) {
   data.columns.map((arg) => {
     if (arg.name == column.name) {
       arg.List.push({
-        // id: Math.random().toString(36),
         id: uniqid(),
         decsription: description,
         state: false,
       });
     }
   });
-  console.log(data.columns);
-
   form.reset();
-  // column.List.push({
-  //   id: "5522",
-  //   description:description,
-  //   state: "new",
-  // });
 }
+
 function removeData() {
   chrome.storage.sync.clear(() => {
     console.log("Everything was removed");
@@ -121,6 +109,7 @@ function deleteTodo(column, listIndex) {
     }
   });
 }
+
 function editTodo(event, column, index) {
   const form = event.target;
   const formData = new FormData(form);
@@ -141,17 +130,23 @@ function googleSearch(searchText) {
 <template>
   <div>
     <div class="todo-header-container">
-      <h1 class="title-todo">Your Todo List</h1>
-      <div class="todo-sub-title">Have a great {{ day }}! One step at a time, one task at a time!</div>
-      <!-- <button @click="removeData()">Clear</button> -->
+      <div class="todo-title">
+        <div>
+          <img alt="todo" src="../assets/todo-icon.jpg" class="header-img" />
+        </div>
+        <div>Your Todo List</div>
+      </div>
+      <div class="todo-sub-title">
+        Have a great {{ day }}! One step at a time, one task at a time!
+      </div>
     </div>
-    <div class="main-todo">
+    <div class="todo-main-container">
       <div
         v-for="column of data.columns"
         :key="column.name"
-        class="todo-container"
+        class="todo-list-container"
       >
-        <div class="todo-container-title">{{ column.name }}</div>
+        <div class="todo-list-title">{{ column.name }}</div>
         <draggable
           v-model="column.List"
           @start="dragging = true"
@@ -162,53 +157,61 @@ function googleSearch(searchText) {
         >
           <template #item="{ element, index }">
             <div>
-              <div class="todo-item" v-if="element.editing">
+              <div class="todo-item-card" v-if="element.editing">
                 <form @submit.prevent="editTodo($event, column, index)">
                   <input
                     type="text"
-                    class="todo-input"
+                    class="edit-input"
                     :value="element.decsription"
                     name="description"
                     autocomplete="off"
                   />
-                  <button class="button" @click="element.editing = false">
-                    cancle
-                  </button>
 
-                  <button class="button">Edit</button>
+                  <div class="edit-btn-container">
+                    <button
+                      @click="element.editing = false"
+                      class="editing-btn"
+                    >
+                      Cancle
+                    </button>
+                    <button class="editing-btn">Edit</button>
+                  </div>
                 </form>
               </div>
-              <div class="todo-item" v-else>
+              <div class="todo-item-card" v-else>
                 <div class="todo-text">
-                  <input type="checkbox" v-model="element.state" />
-                  <span :class="{ completed: element.state }">
-                    {{ element.decsription }}
-                  </span>
+                  <v-checkbox class="check-todo" v-model="element.state">
+                    <template v-slot:label>
+                      <span
+                        id="checkboxlabel"
+                        :class="{ completed: element.state }"
+                      >
+                        {{ element.decsription }}
+                      </span>
+                    </template>
+                  </v-checkbox>
                 </div>
-                <div style="display: flex; justify-content: flex-end">
+                <div class="icon-container">
                   <span>
-                    <i
-                      class="material-icons action-icon"
+                    <v-icon
                       @click="element.editing = true"
-                    >
-                      edit
-                    </i>
+                      class="action-icon"
+                      icon="mdi-pencil"
+                    ></v-icon>
                   </span>
                   <span>
-                    <i
-                      class="material-icons action-icon"
+                    <v-icon
                       @click="deleteTodo(column, index)"
-                    >
-                      delete
-                    </i>
+                      class="action-icon"
+                      icon="mdi-delete"
+                    ></v-icon>
                   </span>
                   <span>
-                    <i
-                      class="material-icons action-icon"
+                    <v-icon
                       @click="googleSearch(element.decsription)"
-                    >
-                      search
-                    </i>
+                      class="action-icon"
+                      icon="mdi-google"
+                    ></v-icon>
                   </span>
                 </div>
               </div>
@@ -216,27 +219,25 @@ function googleSearch(searchText) {
           </template>
         </draggable>
 
-        <div class="add-todo-container">
-          <form @submit.prevent="addItem($event, column)">
-            <div>
-              <input
-                type="text"
-                class="todo-input"
-                placeholder="Add Your Todo"
-                name="description"
-                autocomplete="off"
-              />
-            </div>
+        <div>
+          <v-form ref="form" @submit.prevent="addItem($event, column)">
+            <v-text-field
+              class="todo-add-input"
+              placeholder="Add Your Todo"
+              name="description"
+              variant="outlined"
+              autocomplete="off"
+            ></v-text-field>
+
             <!-- Add item on click -->
             <div class="add-btn-container">
-              <button class="button add-btn">Add Todo</button>
+              <v-btn type="submit" class="add-btn"> Add Todo </v-btn>
             </div>
-          </form>
+          </v-form>
         </div>
       </div>
     </div>
-
-    <div class="bottom-tagline">
+    <div class="todo-bottom">
       <div>Use appropriate task in OnTime!</div>
     </div>
   </div>
@@ -244,101 +245,119 @@ function googleSearch(searchText) {
 
 <style scoped>
 .ghost {
-  opacity: 0.5;
-  background: #aa4f04;
+  opacity: 0.5 !important;
+  background: #01828830 !important;
+}
+#checkboxlabel {
+  color: #f50202;
+  font-size: 18px;
+  font-weight: 500;
 }
 .add-btn {
-  border: 2px solid #195190ff;
-  margin: 2% 0;
+  background: #018288;
+  color: white;
+  font-size: 16px;
 }
 .add-btn-container {
   display: flex;
   justify-content: flex-end;
 }
-.add-todo-container {
-  padding: 10px;
+.action-icon {
+  padding: 1%;
+  margin-left: 4px;
+}
+.check-todo {
+  color: #f50202 !important;
+  font-size: 18px !important;
+}
+.completed {
+  text-decoration: line-through;
+}
+.editing-btn {
+  border: 2px solid #018288;
+  color: #018288;
+  margin-right: 5px;
+  padding: 1% 3%;
+  border-radius: 5px;
+}
+.edit-btn-container {
+  margin: 5px 0;
+  text-align: end;
+}
+.edit-input {
+  border: 2px solid #018288;
+  margin: 10px 7px;
+  padding: 5px 2px;
+}
+.header-img {
+  width: 50px;
+  margin-right: 20px;
+  margin-left: 5px;
+  border-radius: 100%;
+}
+.icon-container {
   display: flex;
   justify-content: flex-end;
+  color: #018288 !important;
 }
-.bottom-tagline {
+.todo-add-input {
+  color: #018288;
+}
+.todo-bottom {
   display: flex;
   justify-content: center;
   font-size: 20px;
   padding: 2% 0;
 }
-.completed {
-  text-decoration: line-through;
-}
-.action-icon {
-  font-size: 18px;
-  border: 1px solid white;
-  padding: 1%;
-  margin-left: 4px;
-  border-radius: 15px;
-}
-.main-todo {
-  display: flex;
-  justify-content: space-around;
-}
 .todo-header-container {
   text-align: center;
 }
-.title-todo {
-  text-decoration: underline;
+.todo-item-card {
+  border: 2px solid #018288;
+  padding: 5px;
+  box-shadow: 3px 2px #018288ad;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 4%;
 }
-.todo-container {
+.todo-list-container {
   width: 30%;
-  border: 1px solid lightgray;
+  border: 2px solid #018288;
   padding: 10px;
-  background-color: #a2a2a1ff;
-  /* background-color: #efc8b1; */
+
 }
-.todo-sub-title{
-  font-size: 20px;
-    text-transform: capitalize;
-    font-style: italic;
-    padding: 2% 0;
-}
-.todo-text {
-  font-size: 18px;
-  word-wrap: break-word;
-}
-.todo-container-title {
+.todo-list-title {
   display: flex;
   justify-content: center;
   font-size: 26px;
   font-weight: bold;
   padding: 2% 0 4% 0;
-  /* color: #5b0e2d; */
-  color: #195190ff;
+  color: #018288;
 }
-.todo-input {
-  border: 2px solid #195190ff;
-}
-.todo-item {
-  padding: 5px;
-  border-bottom: 1px solid lightgray;
-  cursor: pointer;
-  /* background-color: #5b0e2dad; */
-  background-color: #195190e0;
-  /* justify-content: space-between; */
+.todo-main-container {
   display: flex;
-  /* flex-wrap: wrap; */
-  flex-direction: column;
+  justify-content: space-around;
+}
+.todo-title {
+  text-decoration: underline;
+  background: #018288;
   color: white;
-  margin-bottom: 4%;
-  /* align-items: center; */
+  font-size: 34px;
+  font-weight: bolder;
+  padding: 1% 0;
+  display: flex;
+  width: 100%;
+  position: fixed;
+  top: 0;
 }
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+.todo-text {
+  word-wrap: break-word;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+.todo-sub-title {
+  font-size: 20px;
+  text-transform: capitalize;
+  font-style: italic;
+  padding: 13% 0 2% 0;
 }
 </style>

@@ -35,6 +35,10 @@ In order to test the package holding the extension in Chrome we need to:
 
 This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
 
+### Information (PoC work): Todo application 
+1. In this you can use your todo list as an extension popup ( Branch: [master](https://github.com/Moksha-S/Todo-ext)) 
+2. In this on every new tab you find your todo list extension page ( Branch: [on-new-page](https://github.com/Moksha-S/Todo-ext/tree/on-new-page)) 
+
 
 # Author
 ### Moksha Shah:-  [shahmoksham@gmail.com]( shahmoksham@gmail.com)

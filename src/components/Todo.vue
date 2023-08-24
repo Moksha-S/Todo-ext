@@ -122,6 +122,9 @@ function editTodo(event, column, index) {
   });
 }
 
+function openGoogle() {
+  window.open("https://www.google.com/", "_self");
+}
 function googleSearch(searchText) {
   window.open(`https://www.google.com/search?q=${searchText}`, "_blank");
 }
@@ -131,10 +134,19 @@ function googleSearch(searchText) {
   <div>
     <div class="todo-header-container">
       <div class="todo-title">
-        <div>
-          <img alt="todo" src="../assets/todo-logo-img.jpg" class="header-img" />
+        <div style="display: flex; ">
+          <span>
+            <img
+              alt="todo"
+              src="../assets/todo-logo-img.jpg"
+              class="header-img"
+            />
+          </span>
+          <span>Your Todo List</span>
         </div>
-        <div>Your Todo List</div>
+        <div @click="openGoogle()">
+          <img alt="google" src="../assets/google.png" class="header-img" />
+        </div>
       </div>
       <div class="todo-sub-title">
         Have a great {{ day }}! One step at a time, one task at a time!
@@ -325,7 +337,6 @@ function googleSearch(searchText) {
   width: 30%;
   border: 2px solid #018288;
   padding: 10px;
-
 }
 .todo-list-title {
   display: flex;
@@ -351,6 +362,7 @@ function googleSearch(searchText) {
   position: fixed;
   top: 0;
   z-index: 3;
+  justify-content: space-between;
 }
 .todo-text {
   word-wrap: break-word;
@@ -359,6 +371,6 @@ function googleSearch(searchText) {
   font-size: 20px;
   text-transform: capitalize;
   font-style: italic;
-  padding: 13% 0 2% 0;
+  padding: 8% 0 2% 0;
 }
 </style>
